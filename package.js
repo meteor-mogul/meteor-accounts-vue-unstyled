@@ -1,6 +1,8 @@
 Package.describe({
-  summary: "Unstyled version of login widgets",
-  version: "1.4.0"
+  summary: "Unstyled VueJS version of login widgets for Meteor Mogul",
+  version: "0.0.1",
+  git: "https://github.com/meteor-mogul/meteor-accounts-vue-unstyled.git",
+  name: "meteormogul:accounts-ui-unstyled"
 });
 
 Package.onUse(function (api) {
@@ -12,9 +14,13 @@ Package.onUse(function (api) {
   // Allow us to call Accounts.oauth.serviceNames, if there are any OAuth
   // services.
   api.use('accounts-oauth', {weak: true});
+
   // Allow us to directly test if accounts-password (which doesn't use
   // Accounts.oauth.registerService) exists.
   api.use('accounts-password', {weak: true});
+
+  // Allow us to use VueJS components on the client
+  api.use('meteormogul:vue-dist', 'client');
 
   api.addFiles([
     'accounts_ui.js',
