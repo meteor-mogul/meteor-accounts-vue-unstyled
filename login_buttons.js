@@ -1,9 +1,16 @@
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
 
+whichTemplate = function () {
+  var user = Meteor.user();
+  if (user)
+    return '<div>Already logged in</div>';
+  return '<div>Login Here</div>';
+};
+
 // loginButtons VueJS component
 Vue.component('login-buttons', {
-    template: '<div>Login Here</div>'
+    template: whichTemplate()
 });
 
 // shared between dropdown and single mode
