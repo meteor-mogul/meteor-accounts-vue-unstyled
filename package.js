@@ -1,6 +1,6 @@
 Package.describe({
-  summary: "Unstyled VueJS version of login widgets for Meteor Mogul",
-  version: "0.0.3",
+  summary: "[Mothballed] Unstyled VueJS version of login widgets for Meteor Mogul",
+  version: "0.0.4",
   git: "https://github.com/meteor-mogul/meteor-accounts-vue-unstyled.git",
   name: "meteormogul:accounts-ui-unstyled"
 });
@@ -20,7 +20,7 @@ Package.onUse(function (api) {
   api.use('accounts-password@1.5.0', {weak: true});
 
   // Allow us to use VueJS components on the client
-  api.use('meteormogul:vue-dist@2.5.10', 'client');
+  api.use('meteormogul:vue-dist@2.5.15', 'client');
 
   api.addFiles([
     'accounts_ui.js',

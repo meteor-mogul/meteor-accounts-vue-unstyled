@@ -1,4 +1,12 @@
-# Meteor Mogul meteor-accounts-vue-unstyled
+# [Mothballed package name] Meteor Mogul meteor-accounts-vue-unstyled
+
+NOTE: This branch published to Atmosphere as `meteormogul:accounts-ui-unstyled`
+
+I'm changing the name of the package to `meteormogul:accounts-vue-unstyled`
+
+`master` branch of code will use new package name.
+
+## Old README
 
 This provides a user interface to the Meteor Accounts system.
 
