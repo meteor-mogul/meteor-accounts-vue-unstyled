@@ -1,14 +1,15 @@
 Package.describe({
   summary: "Unstyled VueJS version of login widgets for Meteor Mogul",
-  version: "0.0.3",
+  version: "0.0.5",
   git: "https://github.com/meteor-mogul/meteor-accounts-vue-unstyled.git",
-  name: "meteormogul:accounts-ui-unstyled"
+  name: "meteormogul:accounts-vue-unstyled"
 });
 
 Package.onUse(function (api) {
   api.use(['tracker@1.1.3', 'service-configuration@1.0.11', 'accounts-base@1.4.1',
            'underscore@1.0.10', 'templating@1.2.13', 'session@1.1.7', 'jquery@1.11.10'], 'client');
   // Export Accounts (etc) to packages using this one.
+  // NOTE: [MM Q] Why imply and not use?
   api.imply('accounts-base@1.4.1', ['client', 'server']);
 
   // Allow us to call Accounts.oauth.serviceNames, if there are any OAuth
@@ -20,7 +21,7 @@ Package.onUse(function (api) {
   api.use('accounts-password@1.5.0', {weak: true});
 
   // Allow us to use VueJS components on the client
-  api.use('meteormogul:vue-dist@2.5.10', 'client');
+  api.use('meteormogul:vue-dist@2.5.15', 'client');
 
   api.addFiles([
     'accounts_ui.js',
@@ -43,6 +44,12 @@ Package.onUse(function (api) {
   // that for you, or you can do it in your app.
   api.use('less@2.7.11');
   api.addFiles('login_buttons.import.less');
+
+  api.use('ecmascript@0.9.0'); // necessary for export / import of Vue
+
+  // NOTE: Cannot specify login_buttons.js as mainModule or bad things will happen.
+  api.mainModule('main.js');    // mainModule not addFiles
+  api.export("LoginButtons");
 });
 
 Package.onTest(function (api) {
