@@ -1,5 +1,9 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.11] - 2018-01-16
+
+- Seems to work in concept.  Now for the hard part...
+
 ## [0.0.10] - 2018-01-16
 
 - Check to make sure reactivity is actually working...

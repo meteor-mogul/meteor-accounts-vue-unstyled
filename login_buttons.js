@@ -54,6 +54,18 @@ dropdown = function () {
 // For a discussion of the issues, see
 // https://github.com/meteor-vue/vue-meteor-tracker/issues/3
 
+var _vueLoggedInDropdownActions = Vue.component('login-buttons-logged-in-dropdown-actions',
+  {
+    name: 'login-buttons-logged-in-dropdown-actions',
+    template: '#login-buttons-logged-in-dropdown-actions-template',
+    data: function () {
+      return {
+        allowChangingPassword: true,
+      }
+    }
+  }
+);
+
 var _vueOnlyOne = Vue.component('login-buttons-only-one',
 {
     name: 'login-buttons-only-one',
@@ -80,6 +92,24 @@ var _vueLoggedOutDropdown = Vue.component('login-buttons-logged-out-dropdown',
     }
   }
 );
+
+var _vueLoggedOutAllServices = Vue.component('login-buttons-logged-out-all-services',
+{
+  name: 'login-buttons-logged-out-all-services',
+  template: '#login-buttons-logged-out-all-services-template',
+  data: function () {
+    return {
+      services: getLoginServices(),
+      hasPasswordService: hasPasswordService()
+    }
+  },
+  methods: {
+    isPasswordService: function (service) {
+      console.log('service:', service);
+      return service.name === 'password';
+    }
+  }
+});
 
 var _vueLoggedOutSingleLoginButton = Vue.component('login-buttons-logged-out-single-login-button',
   {
@@ -157,6 +187,13 @@ var _vueLoggedOutNoServices = Vue.component('logged-out-no-service',
 {
   name: 'logged-out-no-services',
   template: "#no-login-services-template"
+}
+);
+
+var _vueLoggingIn = Vue.component('login-buttons-logging-in',
+{
+  name: 'login-buttons-logging-in',
+  template: "#login-buttons-logging-in-template"
 }
 );
 
@@ -250,7 +287,7 @@ var _vueLoggedInSelector = Vue.component('login-buttons-logged-in-selector',
 
 // _vueLoginButtonsSelector is a functional Vue component that selects which
 // template to display based on Meteor.user() and getLoginServices()
-_vueLoginButtonsSelector = Vue.component('login-buttons-selector',
+var _vueLoginButtonsSelector = Vue.component('login-buttons-selector',
   {
     name: 'login-buttons-selector',
     functional: true,
@@ -334,6 +371,14 @@ _vueLoginButtons = Vue.component('login-buttons',
       }
     }
   }
+);
+
+var _vueMessages = Vue.component('login-buttons-messages',
+{
+  name: 'login-buttons-messages',
+  template: '#login-buttons-messages-template',
+  props: ['errorMessage','infoMessage']
+}
 );
 
 /*

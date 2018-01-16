@@ -13,14 +13,14 @@
           <a class="login-close-text">Close</a>
           <div class="login-close-text-clear"></div>
           <div v-if="inMessageOnlyFlow">
-            _loginButtonsMessages
+            <login-buttons-messages></login-buttons-messages>
           </div>
           <div v-else>
             <div v-if="inChangePasswordFlow">
               _loginButtonsChangePassword
             </div>
             <div v-else>
-              _loginButtonsLoggedInDropdownActions
+              <login-buttons-logged-in-dropdown-actions></login-buttons-logged-in-dropdown-actions>
             </div>
           </div>
         </div>
@@ -28,19 +28,21 @@
     </div>
   </script>
 
-<template name="_loginButtonsLoggedInDropdownActions">
-  {{#if allowChangingPassword}}
-    <div class="login-button" id="login-buttons-open-change-password">
-      Change password
+  <script type="text/x-template" id="login-buttons-logged-in-dropdown-actions-template">
+    <div>
+      <div v-if="allowChangingPassword">
+        <div class="login-button" id="login-buttons-open-change-password">
+          Change password
+        </div>
+      </div>
+
+      <div class="login-button" id="login-buttons-logout">
+        Sign out
+      </div>
+
+      <login-buttons-messages></login-buttons-messages>
     </div>
-  {{/if}}
-
-  <div class="login-button" id="login-buttons-logout">
-    Sign out
-  </div>
-
-  {{> _loginButtonsMessages}}
-</template>
+  </script>
 
 <!--            -->
 <!-- LOGGED OUT -->
@@ -54,58 +56,39 @@
        <div id="login-dropdown-list" class="accounts-dialog">
          <a class="login-close-text">Close</a>
          <div v-if="loggingIn">
-           _loginButtonsLoggingIn
+           <login-buttons-logging-in></login-buttons-logging-in>
          </div>
          <div class="login-close-text-clear"></div>
-         _loginButtonsLoggedOutAllServices
+         <login-buttons-logged-out-all-services></login-buttons-logged-out-all-services>
        </div>
     </div>
     <div v-else>
       <div v-if="loggingIn">
         <!-- Not normally visible, but if the user closes the dropdown during login. -->
-        _loginButtonsLoggingIn
+        <login-buttons-logging-in></login-buttons-logging-in>
       </div>
       <div v-else>
         <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
       </div>
     </div>
-    <!--
-    {{else}}
-      {{#if loggingIn}}
-        {{! Not normally visible, but if the user closes the dropdown during login.}}
-        {{> _loginButtonsLoggingIn}}
-      {{else}}
-        <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
-      {{/if}}
-    {{/if}}
-    -->
   </div>
 </script>
 
-<template name="_loginButtonsLoggedOutDropdown">
-  <div class="login-link-and-dropdown-list {{additionalClasses}}">
-    {{#if dropdownVisible}}
-      {{! This text is covered by the dropdown, but duplicating it here
-          makes the position of "Close" match the position of this text. }}
-      <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
-      <div id="login-dropdown-list" class="accounts-dialog">
-        <a class="login-close-text">Close</a>
-        {{#if loggingIn}}
-          {{> _loginButtonsLoggingIn}}
-        {{/if}}
-        <div class="login-close-text-clear"></div>
-        {{> _loginButtonsLoggedOutAllServices}}
+<script type="text/x-template" id="login-buttons-logged-out-all-services-template">
+  <div>
+    <div v-for="service in services">
+      _loginButtonsLoggedOutAllServices
+      <div v-if="isPasswordService(service)">
+        Is password service.
       </div>
-    {{else}}
-      {{#if loggingIn}}
-        {{! Not normally visible, but if the user closes the dropdown during login.}}
-        {{> _loginButtonsLoggingIn}}
-      {{else}}
-        <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
-      {{/if}}
-    {{/if}}
+    </div>
+    <div v-if="!hasPasswordService">
+      No password service.
+      <login-buttons-messages :errorMessage="'Error Message Here'"
+                              :infoMessage="'Info Message Here'"></login-buttons-messages>
+    </div>
   </div>
-</template>
+</script>
 
 <template name="_loginButtonsLoggedOutAllServices">
   {{#each services}}

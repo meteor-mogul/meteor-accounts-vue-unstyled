@@ -5,17 +5,11 @@
       <div id="login-buttons" class="login-buttons-dropdown-align-right">
         <login-buttons-selector
           :currentUser="currentUser"
+          :configurationLoaded="configurationLoaded"
           :loggingInOrOut="loggingInOrOut"
           :dropdownStatus="dropdownStatus"
           :loginServices="loginServices"></login-buttons-selector>
       </div>
-  </script>
-
-  <script type="text/x-template" id="login-buttons-logged-in-single-template">
-    <div class="login-buttons-with-only-one-button">
-      <button>Single Button Logout</button>
-      _loginButtonsLoggedInSingleLogoutButton
-    </div>
   </script>
 
   <script type="text/x-template" id="login-buttons-with-only-one-button-template">
@@ -57,58 +51,40 @@
     </div>
   </script>
 
-<!-- These templates all need to be re-written for VueJS -->
-
-<template name="_loginButtonsLoggedOut">
-  {{#if services}} {{! if at least one service is configured }}
-    {{#if configurationLoaded}}
-      {{#if dropdown}} {{! if more than one service configured, or password is configured}}
-        {{> _loginButtonsLoggedOutDropdown}}
-      {{else}}
-        {{#with singleService}} {{! at this point there must be only one configured services }}
-          <div class="login-buttons-with-only-one-button">
-            {{#if loggingIn}}
-              {{> _loginButtonsLoggingInSingleLoginButton}}
-            {{else}}
-              {{> _loginButtonsLoggedOutSingleLoginButton}}
-            {{/if}}
-          </div>
-        {{/with}}
-      {{/if}}
-    {{/if}}
-  {{else}}
-    <div class="no-services">No login services configured</div>
-  {{/if}}
-</template>
-
-<!-- used in various places to display messages to user -->
-<template name="_loginButtonsMessages">
-  {{#if errorMessage}}
-    <div class="message error-message">{{errorMessage}}</div>
-  {{/if}}
-  {{#if infoMessage}}
-    <div class="message info-message">{{infoMessage}}</div>
-  {{/if}}
-</template>
-
-<template name="_loginButtonsLoggingIn">
-  {{> _loginButtonsLoggingInPadding}}
-  <div class="loading">&nbsp;</div>
-  {{> _loginButtonsLoggingInPadding}}
-</template>
-
-<template name="_loginButtonsLoggingInPadding">
-  {{#unless dropdown}}
-    {{! invisible div used for correct height of surrounding div. this ensures
-        that the _loginButtons template is always the same height
-        and the rest of the page doesn't move up and down }}
-    <div class="login-buttons-padding">
-      <div class="login-button single-login-button" style="visibility: hidden;" id="login-buttons-logout">&nbsp;</div>
+  <script type="text/x-template" id="login-buttons-messages-template">
+    <div>
+      <div v-if="errorMessage">
+        <div class="message error-message">{{errorMessage}}</div>
+      </div>
+      <div v-if="infoMessage">
+        <div class="message info-message">{{infoMessage}}</div>
+      </div>
     </div>
-  {{else}}
-    {{! just add some padding }}
-    <div class="login-buttons-padding"></div>
-  {{/unless}}
-</template>
+  </script>
+
+  <script type="text/x-template" id="login-buttons-logging-in-template">
+    <div>
+       _loginButtonsLoggingInPadding
+      <div class="loading">&nbsp;</div>
+       _loginButtonsLoggingInPadding
+    </div>
+  </script>
+
+  <script type="text/x-template" id="login-buttons-logging-in-padding-template">
+    <div>
+      <div v-if="!dropdownStatus">
+      <!-- invisible div used for correct height of surrounding div. this ensures
+          that the _loginButtons template is always the same height
+          and the rest of the page doesn't move up and down -->
+          <div class="login-buttons-padding">
+            <div class="login-button single-login-button" style="visibility: hidden;" id="login-buttons-logout">&nbsp;</div>
+          </div>
+      </div>
+      <div v-else>
+      <!-- just add some padding -->
+        <div class="login-buttons-padding"></div>
+      </div>
+    </div>
+  </script>
 
 </body>

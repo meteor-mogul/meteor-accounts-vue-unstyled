@@ -1,5 +1,24 @@
 <body>
 
+  <!-- Logged in, need to logout -->
+
+  <script type="text/x-template" id="login-buttons-logged-in-single-template">
+    <div class="login-buttons-with-only-one-button">
+      <login-buttons-logged-in-single-logout></login-buttons-logged-in-single-logout>
+    </div>
+  </script>
+
+  <script type="text/x-template" id="login-buttons-logged-in-single-logout-template">
+    <div class="login-text-and-button">
+      <div class="login-display-name">
+        {{displayName}}
+      </div>
+      <div class="login-button single-login-button" id="login-buttons-logout">Sign Out</div>
+    </div>
+  </script>
+
+  <!-- Logged out, need to login -->
+
   <script type="text/x-template" id="login-buttons-logged-out-single-login-button-template">
     <div class="login-text-and-button">
       <div class="login-button single-login-button"> <!--  {{#unless configured}}configure-button{{/unless}}"
@@ -20,18 +39,11 @@
     </div>
   </script>
 
+  <!-- Logging in -->
+
   <script type="text/x-template" id="login-buttons-logging-in-single-login-button-template">
     <div class="login-text-and-button">
-       _loginButtonsLoggingIn
-    </div>
-  </script>
-
-  <script type="text/x-template" id="login-buttons-logged-in-single-logout-template">
-    <div class="login-text-and-button">
-      <div class="login-display-name">
-        {{displayName}}
-      </div>
-      <div class="login-button single-login-button" id="login-buttons-logout">Sign Out</div>
+       <login-buttons-logging-in></login-buttons-logging-in>
     </div>
   </script>
 
