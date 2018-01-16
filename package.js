@@ -13,8 +13,10 @@ Package.onUse(function (api) {
 
   // NOTE: api.use lets this package use symbols from other packages, but
   //       doesn't pass them on to the app.
+  // api.use(['tracker@1.1.3', 'service-configuration@1.0.11', 'accounts-base@1.4.1',
+  //         'underscore@1.0.10', 'templating@1.2.13', 'session@1.1.7', 'jquery@1.11.10'], 'client');
   api.use(['tracker@1.1.3', 'service-configuration@1.0.11', 'accounts-base@1.4.1',
-           'underscore@1.0.10', 'templating@1.2.13', 'session@1.1.7', 'jquery@1.11.10'], 'client');
+          'underscore@1.0.10', 'session@1.1.7', 'jquery@1.11.10'], 'client');
   // Export Accounts (etc) to packages using this one.
   // NOTE: api.imply lets this package use symbols from other packages, and
   //       also lets the app use those symbols.
@@ -30,6 +32,8 @@ Package.onUse(function (api) {
 
   // Allow us to use VueJS components on the client
   api.use('meteormogul:vue-dist@2.5.15', 'client');
+
+  api.use('static-html@1.2.2', 'client');
 
   // This loads files in this order, so you can define things first and
   // use them later, e.g. the LoginButtons symbol in main.js

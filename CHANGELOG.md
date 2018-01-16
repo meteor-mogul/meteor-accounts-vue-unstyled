@@ -1,5 +1,11 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.8] - 2018-01-15
+
+- Use static-html to parse .html files
+- Comment out Template code
+- Start converting from Blaze to Vue
+
 ## [0.0.7] - 2018-01-15
 
 - Giving up on export / import business and just declaring global variable for LoginButtons

@@ -37,7 +37,7 @@ Accounts.onPageLoadLogin(function (attemptInfo) {
     loginResultCallback(attemptInfo.type, attemptInfo.error);
 });
 
-
+/*
 Template._loginButtonsLoggedOutSingleLoginButton.events({
   'click .login-button': function () {
     var serviceName = this.name;
@@ -83,6 +83,7 @@ Template._loginButtonsLoggedOutSingleLoginButton.helpers({
       return capitalize(this.name);
   }
 });
+*/
 
 // XXX from http://epeli.github.com/underscore.string/lib/underscore.string.js
 var capitalize = function(str){

@@ -28,7 +28,7 @@ Accounts.onEmailVerificationLink(function (token, done) {
   });
 });
 
-
+/*
 //
 // resetPasswordDialog template
 //
@@ -47,6 +47,7 @@ Template._resetPasswordDialog.events({
       doneCallback();
   }
 });
+*/
 
 var resetPassword = function () {
   loginButtonsSession.resetMessages();
@@ -68,6 +69,7 @@ var resetPassword = function () {
     });
 };
 
+/*
 Template._resetPasswordDialog.helpers({
   inResetPasswordFlow: function () {
     return loginButtonsSession.get('resetPasswordToken');
@@ -111,6 +113,7 @@ Template._enrollAccountDialog.events({
       doneCallback();
   }
 });
+*/
 
 var enrollAccount = function () {
   loginButtonsSession.resetMessages();
@@ -131,6 +134,7 @@ var enrollAccount = function () {
     });
 };
 
+/*
 Template._enrollAccountDialog.helpers({
   inEnrollAccountFlow: function () {
     return loginButtonsSession.get('enrollAccountToken');
@@ -224,6 +228,7 @@ Template._configureLoginServiceDialog.events({
       updateSaveDisabled();
   }
 });
+*/
 
 // check whether the 'save configuration' button should be enabled.
 // this is a really strange way to implement this and a Forms
@@ -237,6 +242,7 @@ var updateSaveDisabled = function () {
   loginButtonsSession.set('configureLoginServiceDialogSaveDisabled', anyFieldEmpty);
 };
 
+/*
 // Returns the appropriate template for this login service.  This
 // template should be defined in the service's package
 Template._configureLoginServiceDialog.templateForService = function(serviceName) {
@@ -269,6 +275,7 @@ Template._configureLoginServiceDialog.helpers({
     return loginButtonsSession.get('configureLoginServiceDialogSaveDisabled');
   }
 });
+*/
 
 // XXX from http://epeli.github.com/underscore.string/lib/underscore.string.js
 var capitalize = function(str){
@@ -276,6 +283,7 @@ var capitalize = function(str){
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
+/*
 Template._configureLoginOnDesktopDialog.helpers({
   visible: function () {
     return loginButtonsSession.get('configureOnDesktopVisible');
@@ -287,3 +295,4 @@ Template._configureLoginOnDesktopDialog.events({
     loginButtonsSession.set('configureOnDesktopVisible', false);
   }
 });
+*/

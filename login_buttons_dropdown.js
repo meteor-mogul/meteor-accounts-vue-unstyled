@@ -3,6 +3,7 @@ console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_dropdown.js
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
 
+/*
 // events shared between loginButtonsLoggedOutDropdown and
 // loginButtonsLoggedInDropdown
 Template.loginButtons.events({
@@ -336,7 +337,7 @@ Template._loginButtonsChangePassword.helpers({
     ];
   }
 });
-
+*/
 
 //
 // helpers

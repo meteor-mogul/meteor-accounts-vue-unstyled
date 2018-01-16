@@ -3,6 +3,30 @@ console.log("Running meteormogul:accounts-vue-unstyled/login_buttons.js");
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
 
+var _vueLoginButtonsLoggedOut = {
+  name: 'login-buttons-logged-out',
+  functional: true,
+  render: function (createElement, context) {
+      function selectComponent() {
+        if (getLoginServices()) {
+          return {
+            template: "#login-buttons-logged-out-template"
+          }
+        } else {
+          return {
+            template: "#no-login-services-template"
+          }
+        }
+      }
+
+      return createElement(
+        selectComponent(),
+        context.data,
+        context.children
+      );
+  }
+};
+
 // _loginButtons is a functional Vue component that selects which
 // template to display based on Meteor.user()
 _vueLoginButtons = Vue.component('login-buttons',
@@ -10,8 +34,19 @@ _vueLoginButtons = Vue.component('login-buttons',
     name: 'login-buttons',
     functional: true,
     render: function (createElement, context) {
+
+      function selectComponent() {
+        if (Meteor.user()) {
+          return {
+            template: "<button>Logout</button>"
+           };
+        } else {
+          return _vueLoginButtonsLoggedOut;
+        }
+      }
+
       return createElement(
-        { template: '<div>Login Buttons</div>'},
+        selectComponent(),
         context.data,
         context.children
       );
@@ -19,6 +54,7 @@ _vueLoginButtons = Vue.component('login-buttons',
   }
 );
 
+/*
 // shared between dropdown and single mode
 Template.loginButtons.events({
   'click #login-buttons-logout': function() {
@@ -31,6 +67,7 @@ Template.loginButtons.events({
 Template.registerHelper('loginButtons', function () {
   throw new Error("Use {{> loginButtons}} instead of {{loginButtons}}");
 });
+*/
 
 //
 // helpers
@@ -121,6 +158,7 @@ validatePassword = function (password) {
   }
 };
 
+/*
 //
 // loginButtonLoggedOut template
 //
@@ -187,3 +225,4 @@ Template._loginButtonsMessages.helpers({
 Template._loginButtonsLoggingInPadding.helpers({
   dropdown: dropdown
 });
+*/
