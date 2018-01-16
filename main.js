@@ -5,4 +5,8 @@
 
 console.log("Running meteormogul:accounts-vue-unstyled/main.js");
 
-export const LoginButtons = _vueLoginButtons;
+// Giving up on this...
+// export const LoginButtons = _vueLoginButtons;
+// ... and instead just declaring a global variable
+LoginButtons = _vueLoginButtons;
+console.log('{ LoginButtons } from meteormogul:accounts-vue-unstyled/main.js', LoginButtons);

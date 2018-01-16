@@ -1,5 +1,9 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.7] - 2018-01-15
+
+- Giving up on export / import business and just declaring global variable for LoginButtons
+
 ## [0.0.6] - 2018-01-15
 
 - Sorted out package.js api.addFiles() vs. api.mainModule() debacle
