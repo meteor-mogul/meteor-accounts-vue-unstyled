@@ -2,30 +2,31 @@
 <!--           -->
 <!-- LOGGED IN -->
 <!--           -->
-<template name="_loginButtonsLoggedInDropdown">
-  <div class="login-link-and-dropdown-list">
-    <a class="login-link-text" id="login-name-link">
-      {{displayName}} ▾
-    </a>
+  <script type="text/x-template" id="login-buttons-logged-in-dropdown-template">
+    <div class="login-link-and-dropdown-list">
+      <a class="login-link-text" id="login-name-link">
+        {{displayName}} ▾
+      </a>
 
-    {{#if dropdownVisible}}
-      <div id="login-dropdown-list" class="accounts-dialog">
-        <a class="login-close-text">Close</a>
-        <div class="login-close-text-clear"></div>
-
-        {{#if inMessageOnlyFlow}}
-          {{> _loginButtonsMessages}}
-        {{else}}
-          {{#if inChangePasswordFlow}}
-            {{> _loginButtonsChangePassword}}
-          {{else}}
-            {{> _loginButtonsLoggedInDropdownActions}}
-          {{/if}}
-        {{/if}}
+      <div v-if="dropdownVisible">
+        <div id="login-dropdown-list" class="accounts-dialog">
+          <a class="login-close-text">Close</a>
+          <div class="login-close-text-clear"></div>
+          <div v-if="inMessageOnlyFlow">
+            _loginButtonsMessages
+          </div>
+          <div v-else>
+            <div v-if="inChangePasswordFlow">
+              _loginButtonsChangePassword
+            </div>
+            <div v-else>
+              _loginButtonsLoggedInDropdownActions
+            </div>
+          </div>
+        </div>
       </div>
-    {{/if}}
-  </div>
-</template>
+    </div>
+  </script>
 
 <template name="_loginButtonsLoggedInDropdownActions">
   {{#if allowChangingPassword}}
@@ -44,6 +45,43 @@
 <!--            -->
 <!-- LOGGED OUT -->
 <!--            -->
+<script type="text/x-template" id="login-buttons-logged-out-dropdown-template">
+  <div class="login-link-and-dropdown-list"> <!--  {{additionalClasses}} -->
+    <div v-if="dropdownVisible">
+      <!-- This text is covered by the dropdown, but duplicating it here
+           makes the position of "Close" match the position of this text. -->
+       <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
+       <div id="login-dropdown-list" class="accounts-dialog">
+         <a class="login-close-text">Close</a>
+         <div v-if="loggingIn">
+           _loginButtonsLoggingIn
+         </div>
+         <div class="login-close-text-clear"></div>
+         _loginButtonsLoggedOutAllServices
+       </div>
+    </div>
+    <div v-else>
+      <div v-if="loggingIn">
+        <!-- Not normally visible, but if the user closes the dropdown during login. -->
+        _loginButtonsLoggingIn
+      </div>
+      <div v-else>
+        <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
+      </div>
+    </div>
+    <!--
+    {{else}}
+      {{#if loggingIn}}
+        {{! Not normally visible, but if the user closes the dropdown during login.}}
+        {{> _loginButtonsLoggingIn}}
+      {{else}}
+        <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
+      {{/if}}
+    {{/if}}
+    -->
+  </div>
+</script>
+
 <template name="_loginButtonsLoggedOutDropdown">
   <div class="login-link-and-dropdown-list {{additionalClasses}}">
     {{#if dropdownVisible}}

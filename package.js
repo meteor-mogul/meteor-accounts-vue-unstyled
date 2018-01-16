@@ -5,6 +5,10 @@ Package.describe({
   name: "meteormogul:accounts-vue-unstyled"
 });
 
+Npm.depends({
+  'vue-meteor-tracker': '1.2.3'
+});
+
 Package.onUse(function (api) {
 
   // I really don't understand how this api.use stuff works, since when I

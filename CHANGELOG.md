@@ -1,5 +1,11 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.9] - 2018-01-16
+
+- Require npm package `vue-meteor-tracker': '1.2.3'`
+- That lets Vue see Meteor reactive data
+- Maybe this is sort of starting to work?  Slow going.
+
 ## [0.0.8] - 2018-01-15
 
 - Use static-html to parse .html files
