@@ -1,5 +1,9 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.6] - 2018-01-15
+
+- Sorted out package.js api.addFiles() vs. api.mainModule() debacle
+
 ## [0.0.5] - 2018-01-10
 
 ### Changed

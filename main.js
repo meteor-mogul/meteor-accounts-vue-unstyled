@@ -3,8 +3,6 @@
 //       mainModule for package. No joy.
 // Doing it this way makes Meteor happy.
 
-import { Vue } from 'meteor/meteormogul:vue-dist';
+console.log("Running meteormogul:accounts-vue-unstyled/main.js");
 
-export const LoginButtons = Vue.component("login-buttons", {
-  template: "#login-buttons-template"
-});
+export const LoginButtons = _vueLoginButtons;

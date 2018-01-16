@@ -1,17 +1,23 @@
+console.log("Running meteormogul:accounts-vue-unstyled/login_buttons.js");
+
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
 
-whichTemplate = function () {
-  var user = Meteor.user();
-  if (user)
-    return '<div>Already logged in</div>';
-  return '<div>Login Here</div>';
-};
-
-// loginButtons VueJS component
-Vue.component('login-buttons', {
-    template: whichTemplate()
-});
+// _loginButtons is a functional Vue component that selects which
+// template to display based on Meteor.user()
+_vueLoginButtons = Vue.component('login-buttons',
+  {
+    name: 'login-buttons',
+    functional: true,
+    render: function (createElement, context) {
+      return createElement(
+        { template: '<div>Login Buttons</div>'},
+        context.data,
+        context.children
+      );
+    }
+  }
+);
 
 // shared between dropdown and single mode
 Template.loginButtons.events({

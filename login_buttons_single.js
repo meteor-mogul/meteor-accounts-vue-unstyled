@@ -1,3 +1,5 @@
+console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_single.js");
+
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
 

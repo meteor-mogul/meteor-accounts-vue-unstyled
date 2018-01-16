@@ -1,3 +1,5 @@
+console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_session.js");
+
 var VALID_KEYS = [
   'dropdownVisible',
 
