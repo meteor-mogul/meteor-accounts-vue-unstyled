@@ -311,6 +311,7 @@ _vueLoginButtons = Vue.component('login-buttons',
       console.log('Meteor.user():', Meteor.user());
       return {
         currentUser: null,
+        configurationLoaded: false,
         loggingInOrOut: false,
         dropdownStatus: dropdown(),
         loginServices: getLoginServices().length
@@ -322,6 +323,13 @@ _vueLoginButtons = Vue.component('login-buttons',
         update() {
           // Meteor.user() is reactive
           return Meteor.user();
+        }
+      },
+      configurationLoaded: {
+        update() {
+          // This is a reactive function that will change to
+          // true when the login services have been configured
+          return Accounts.loginServicesConfigured();
         }
       }
     }

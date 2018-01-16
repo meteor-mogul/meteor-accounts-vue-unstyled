@@ -33,6 +33,9 @@
     <div v-if="configurationLoaded">
       <login-buttons-logged-out-selector :dropdownStatus="dropdownStatus"></login-buttons-logged-out-selector>
     </div>
+    <div v-else>
+      <p>Waiting for login services to configure...</p>
+    </div>
   </script>
 
   <script type="text/x-template" id="no-login-services-template">

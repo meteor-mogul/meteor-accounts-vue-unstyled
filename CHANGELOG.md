@@ -1,5 +1,9 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.10] - 2018-01-16
+
+- Check to make sure reactivity is actually working...
+
 ## [0.0.9] - 2018-01-16
 
 - Require npm package `vue-meteor-tracker': '1.2.3'`
