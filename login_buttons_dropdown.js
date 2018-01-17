@@ -1,4 +1,9 @@
-console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_dropdown.js");
+import { Vue } from 'meteor/meteormogul:vue-dist';
+import VueMeteorTracker from 'vue-meteor-tracker';
+Vue.use(VueMeteorTracker);
+
+var MMDEBUG = true;
+MMDEBUG && console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_dropdown.js");
 
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
@@ -55,7 +60,42 @@ Template._loginButtonsLoggedInDropdownActions.helpers({
   }
 });
 
+*/
 
+var _vueLoggedOutDropdown = Vue.component('login-buttons-logged-out-dropdown',
+  {
+    name: 'login-buttons-logged-out-dropdown',
+    template: '#login-buttons-logged-out-dropdown-template',
+    data: function () {
+      return {
+        dropdownVisible: false,
+        loggingIn: false
+      };
+    },
+    meteor: {
+      loggingIn: {
+        update() {
+          return Meteor.loggingIn();
+        }
+      },
+      dropdownVisible: {
+        update() {
+          return loginButtonsSession.get('dropdownVisible');
+        }
+      }
+    },
+    methods: {
+      showDropdown: function () {
+        this.dropdownVisible = true;
+      },
+      hideDropdown: function () {
+        loginButtonsSession.closeDropdown();
+      }
+    }
+  }
+);
+
+/*
 //
 // loginButtonsLoggedOutDropdown template and related
 //
@@ -500,3 +540,5 @@ var matchPasswordAgainIfPresent = function () {
   }
   return true;
 };
+
+export { _vueLoggedOutDropdown };

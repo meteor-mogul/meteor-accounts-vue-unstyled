@@ -1,9 +1,22 @@
 import { Vue } from 'meteor/meteormogul:vue-dist';
-// Allow Vue to see Meteor reactive data
+// Okay, big problem with re-writing accounts system is that Meteor's
+// reactivity is invisible to Vue, and vice versa.
+// Vue doesn't get notified when Tracker reactive values change.
+// This is a problem for things like Meteor.user(), Meteor.loggingIn()
+// and Accounts.loginServicesConfigured().
+// For a discussion of the issues, see
+// https://github.com/meteor-vue/vue-meteor-tracker/issues/3
+// Solution is to require npm package 'vue-meteor-tracker'
+// This allows Vue to see Meteor reactive data.
 import VueMeteorTracker from 'vue-meteor-tracker';
 Vue.use(VueMeteorTracker);
 
-console.log("Running meteormogul:accounts-vue-unstyled/login_buttons.js");
+// Use symbols from other files
+import { _vueLoggedOutDropdown } from './login_buttons_dropdown.js';
+
+// for debugging in Meteor Mogul. true turns on console debugging messages.
+var MMDEBUG = true;
+MMDEBUG && console.log("Running meteormogul:accounts-vue-unstyled/login_buttons.js");
 
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
@@ -46,13 +59,54 @@ dropdown = function () {
   return hasPasswordService() || getLoginServices().length > 1;
 };
 
-// Okay, big problem with re-writing accounts system is that Meteor's
-// Tracker and Vue's reactivity don't play well with each other.
-// Vue doesn't get notified when Tracker reactive values change.
-// This is a problem for things like Meteor.user(), Meteor.loggingIn()
-// and Accounts.loginServicesConfigured().
-// For a discussion of the issues, see
-// https://github.com/meteor-vue/vue-meteor-tracker/issues/3
+// Vue components that provide the ui for the accounts system
+
+// _vueLoginButtons displays login buttons
+// declare as a global so I don't have to worry about imports
+_vueLoginButtons = Vue.component('login-buttons',
+  {
+    name: 'login-buttons',
+    template: '#login-buttons-template',
+    // See later under meteor where all these data symbols get access to
+    // Meteor reactivity.  When Tracker notices a change in their values,
+    // it will notify Vue that the value has updated.
+    data: function() {
+      return {
+        currentUser: null,
+        configurationLoaded: false,
+        loggingInOrOut: false,
+        dropdownStatus: false,
+        loginServices: 0
+      };
+    },
+    // Let Vue see Meteor reactive data
+    meteor: {
+      currentUser: {
+        update() {
+          // Meteor.user() is reactive
+          return Meteor.user();
+        }
+      },
+      configurationLoaded: {
+        update() {
+          // This is a reactive function that will change to
+          // true when the login services have been configured
+          return Accounts.loginServicesConfigured();
+        }
+      },
+      dropdownStatus: {
+        update() {
+          return dropdown();
+        }
+      },
+      loginServices: {
+        update() {
+          return getLoginServices().length;
+        }
+      }
+    }
+  }
+);
 
 var _vueLoggedInDropdownActions = Vue.component('login-buttons-logged-in-dropdown-actions',
   {
@@ -80,27 +134,6 @@ var _vueOnlyOne = Vue.component('login-buttons-only-one',
         loggingIn: function () {
           return Meteor.loggingIn();
         }
-      }
-    }
-  }
-);
-
-var _vueLoggedOutDropdown = Vue.component('login-buttons-logged-out-dropdown',
-  {
-    name: 'login-buttons-logged-out-dropdown',
-    template: '#login-buttons-logged-out-dropdown-template',
-    data: function () {
-      return {
-        dropdownVisible: false,
-        loggingIn: false
-      };
-    },
-    methods: {
-      showDropdown: function () {
-        this.dropdownVisible = true;
-      },
-      hideDropdown: function () {
-        loginButtonsSession.closeDropdown();
       }
     }
   }
@@ -260,25 +293,11 @@ var _vueLoggedOutAllServices = Vue.component('login-buttons-logged-out-all-servi
   },
   methods: {
     isPasswordService: function (service) {
-      console.log('service:', service);
+      MMDEBUG && console.log('service:', service);
       return service.name === 'password';
     }
   }
 });
-
-var _vueLoggedOutSingleLoginButton = Vue.component('login-buttons-logged-out-single-login-button',
-  {
-    name: 'login-buttons-logged-out-single-login-button',
-    template: '#login-buttons-logged-out-single-login-button-template',
-    data: function () {
-      return {
-        cannotConfigure: false,
-        capitalizedName: "Sample Name",
-        configured: false
-      };
-    }
-  }
-);
 
 var _vueLoggedOutSelector = Vue.component('login-buttons-logged-out-selector',
   {
@@ -287,9 +306,9 @@ var _vueLoggedOutSelector = Vue.component('login-buttons-logged-out-selector',
     props: [ 'dropdownStatus' ],
     render: function (createElement, context) {
 
-      console.log('rendering _vueLoggedOutSelector');
-      console.log('dropdownStatus:', context.props.dropdownStatus);
-      console.log('loggingIn:', Meteor.loggingIn());
+      MMDEBUG && console.log('rendering _vueLoggedOutSelector');
+      MMDEBUG && console.log('dropdownStatus:', context.props.dropdownStatus);
+      MMDEBUG && console.log('loggingIn:', Meteor.loggingIn());
 
       function selectComponent() {
         if (context.props.dropdownStatus) {
@@ -315,7 +334,7 @@ var _vueLoggedOutWithServices = {
   data: function () {
     return {
       configurationLoaded: false,
-      dropdownStatus: dropdown(),
+      dropdownStatus: false,
       loggingIn: false
     }
   },
@@ -333,6 +352,11 @@ var _vueLoggedOutWithServices = {
         // This is a reactive function that will change to
         // true when a user is logging in
         return Meteor.loggingIn();
+      }
+    },
+    dropdownStatus: {
+      update() {
+        return dropdown();
       }
     }
   }
@@ -407,13 +431,13 @@ var _vueLoggedInSelector = Vue.component('login-buttons-logged-in-selector',
           'dropdownStatus'],
   render: function (createElement, context) {
 
-    console.log('rendering _vueLoggedInSelector');
-    console.log('currentUser:', context.props.currentUser);
-    console.log('loggingInOrOut:', context.props.loggingInOrOut);
-    console.log('dropdownStatus:', context.props.dropdownStatus);
+    MMDEBUG && console.log('rendering _vueLoggedInSelector');
+    MMDEBUG && console.log('currentUser:', context.props.currentUser);
+    MMDEBUG && console.log('loggingInOrOut:', context.props.loggingInOrOut);
+    MMDEBUG && console.log('dropdownStatus:', context.props.dropdownStatus);
 
     function selectComponent(loggingInOrOut,dropdownStatus) {
-      console.log('Selecting component for _vueLoggedInSelector');
+      MMDEBUG && console.log('Selecting component for _vueLoggedInSelector');
       if (loggingInOrOut) {
         /*
         We aren't actually logged in/out yet; we're just setting Meteor.userId
@@ -423,20 +447,20 @@ var _vueLoggedInSelector = Vue.component('login-buttons-logged-in-selector',
         */
 
         if (dropdownStatus) {
-          console.log("returning _vueLoggedInDropdown");
+          MMDEBUG && console.log("returning _vueLoggedInDropdown");
           return _vueLoggedInDropdown;
         } else {
-          console.log("returning _vueLoggedInSingle");
+          MMDEBUG && console.log("returning _vueLoggedInSingle");
           return _vueLoggedInSingle;
         }
       } else {
         // We're already logged in.
-        console.log("returning _vueLoggedIn", _vueLoggedIn);
+        MMDEBUG && console.log("returning _vueLoggedIn", _vueLoggedIn);
         return _vueLoggedIn;
       }
     }
 
-    console.log("creating element for _vueLoggedInSelector");
+    MMDEBUG && console.log("creating element for _vueLoggedInSelector");
     return createElement(
       selectComponent(context.props.loggingInOrOut,
                       context.props.dropDownStatus),
@@ -459,12 +483,12 @@ var _vueLoginButtonsSelector = Vue.component('login-buttons-selector',
              'loginServices' ],
     render: function (createElement, context) {
 
-      console.log('rendering _vueLoginButtonsSelector');
-      console.log('currentUser:', context.props.currentUser);
-      console.log('dropdownStatus:', context.props.dropdownStatus);
-      console.log('getLoginServices:', context.props.loginServices);
-      console.log('context.data:', context.data);
-      console.log('context.props:', context.props);
+      MMDEBUG && console.log('rendering _vueLoginButtonsSelector');
+      MMDEBUG && console.log('currentUser:', context.props.currentUser);
+      MMDEBUG && console.log('dropdownStatus:', context.props.dropdownStatus);
+      MMDEBUG && console.log('getLoginServices:', context.props.loginServices);
+      MMDEBUG && console.log('context.data:', context.data);
+      MMDEBUG && console.log('context.props:', context.props);
 
       function selectComponent(currentUser,loginServices) {
         if (currentUser) {
@@ -496,41 +520,6 @@ var _vueLoginButtonsSelector = Vue.component('login-buttons-selector',
         },
         context.children
       );
-    }
-  }
-);
-
-// _vueLoginButtons displays login buttons
-// declare as a global so I don't have to worry about imports
-_vueLoginButtons = Vue.component('login-buttons',
-  {
-    name: 'login-buttons',
-    template: '#login-buttons-template',
-    data: function() {
-      console.log('Meteor.user():', Meteor.user());
-      return {
-        currentUser: null,
-        configurationLoaded: false,
-        loggingInOrOut: false,
-        dropdownStatus: dropdown(),
-        loginServices: getLoginServices().length
-      };
-    },
-    // Let Vue see Meteor reactive data
-    meteor: {
-      currentUser: {
-        update() {
-          // Meteor.user() is reactive
-          return Meteor.user();
-        }
-      },
-      configurationLoaded: {
-        update() {
-          // This is a reactive function that will change to
-          // true when the login services have been configured
-          return Accounts.loginServicesConfigured();
-        }
-      }
     }
   }
 );
