@@ -1,5 +1,9 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.12] - 2018-01-16
+
+- Making more progress.
+
 ## [0.0.11] - 2018-01-16
 
 - Seems to work in concept.  Now for the hard part...

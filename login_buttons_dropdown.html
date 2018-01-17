@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <div class="login-button" id="login-buttons-logout">
+      <div class="login-button" id="login-buttons-logout" v-on:click="logout">
         Sign out
       </div>
 
@@ -52,9 +52,9 @@
     <div v-if="dropdownVisible">
       <!-- This text is covered by the dropdown, but duplicating it here
            makes the position of "Close" match the position of this text. -->
-       <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
+       <a class="login-link-text" id="login-sign-in-link" v-on:click="showDropdown">Sign in ▾</a>
        <div id="login-dropdown-list" class="accounts-dialog">
-         <a class="login-close-text">Close</a>
+         <a class="login-close-text" v-on:click="hideDropdown">Close</a>
          <div v-if="loggingIn">
            <login-buttons-logging-in></login-buttons-logging-in>
          </div>
@@ -68,7 +68,7 @@
         <login-buttons-logging-in></login-buttons-logging-in>
       </div>
       <div v-else>
-        <a class="login-link-text" id="login-sign-in-link">Sign in ▾</a>
+        <a class="login-link-text" id="login-sign-in-link" v-on:click="showDropdown">Sign in ▾</a>
       </div>
     </div>
   </div>
@@ -77,11 +77,18 @@
 <script type="text/x-template" id="login-buttons-logged-out-all-services-template">
   <div>
     <div v-for="service in services">
-      _loginButtonsLoggedOutAllServices
       <div v-if="isPasswordService(service)">
         Is password service.
+        <div v-if="hasOtherServices">
+          <login-buttons-logged-out-password-service-separator></login-buttons-logged-out-password-service-separator>
+        </div>
+        <login-buttons-logged-out-password-service></login-buttons-logged-out-password-service>
+      </div>
+      <div v-else>
+         _loginButtonsLoggedOutSingleLoginButton
       </div>
     </div>
+
     <div v-if="!hasPasswordService">
       No password service.
       <login-buttons-messages :errorMessage="'Error Message Here'"
@@ -90,30 +97,73 @@
   </div>
 </script>
 
-<template name="_loginButtonsLoggedOutAllServices">
-  {{#each services}}
-    {{#if isPasswordService}}
-      {{#if hasOtherServices}} {{! the password service will always come last }}
-        {{> _loginButtonsLoggedOutPasswordServiceSeparator}}
-      {{/if}}
-      {{> _loginButtonsLoggedOutPasswordService}}
-    {{else}}
-      {{> _loginButtonsLoggedOutSingleLoginButton}}
-    {{/if}}
-  {{/each}}
-
-  {{#unless hasPasswordService}}
-    {{> _loginButtonsMessages}}
-  {{/unless}}
-</template>
-
-<template name="_loginButtonsLoggedOutPasswordServiceSeparator">
+<script type="text/x-template" id="login-buttons-logged-out-password-service-separator-template">
   <div class="or">
     <span class="hline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
     <span class="or-text">or</span>
     <span class="hline">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
   </div>
-</template>
+</script>
+
+<script type="text/x-template" id="login-buttons-logged-out-password-service-template">
+  <div>
+    <div v-if="inForgotPasswordFlow">
+      _forgotPasswordFlow
+    </div>
+    <div v-else>
+      <form class="login-form login-password-form">
+        <div v-for="field in fields">
+          <login-buttons-form-field v-bind:field="field"></login-buttons-form-field>
+        </div>
+
+        <login-buttons-messages></login-buttons-messages>
+
+        <button
+          class="login-button login-button-form-submit"
+          id="login-buttons-password"
+        >
+          <div v-if="inSignupFlow">
+            Create account
+          </div>
+          <div v-else>
+            Sign in
+          </div>
+        </button>
+
+        <div v-if="inLoginFlow">
+          <div v-if="showCreateAccountLink">
+            <div class="additional-link-container">
+              <a id="signup-link" class="additional-link" v-on:click="createAccount">Create account</a>
+            </div>
+          </div>
+
+          <div v-if="showForgotPasswordLink">
+            <div class="additional-link-container">
+              <a id="forgot-password-link" class="additional-link">Forgot password</a>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="inSignupFlow">
+          _loginButtonsBackToLoginLink
+        </div>
+      </form>
+    </div>
+  </div>
+</script>
+
+<script type="text/x-template" id="login-buttons-form-field-template">
+  <div>
+    <div v-if="field.visible">
+      <div ><!-- id="login-{{fieldName}}-label-and-input" -->
+        <label ><!-- id="login-{{fieldName}}-label" for="login-{{fieldName}}" -->
+          {{field.fieldLabel}}
+        </label>
+        <input  /><!-- id="login-{{fieldName}}" type="{{inputType}}" -->
+      </div>
+    </div>
+  </div>
+</script>
 
 <template name="_loginButtonsLoggedOutPasswordService">
   {{#if inForgotPasswordFlow}}

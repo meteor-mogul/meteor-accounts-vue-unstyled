@@ -62,6 +62,11 @@ var _vueLoggedInDropdownActions = Vue.component('login-buttons-logged-in-dropdow
       return {
         allowChangingPassword: true,
       }
+    },
+    methods: {
+      logout: function () {
+        Meteor.logout(function () { loginButtonsSession.closeDropdown(); });
+      }
     }
   }
 );
@@ -89,8 +94,157 @@ var _vueLoggedOutDropdown = Vue.component('login-buttons-logged-out-dropdown',
         dropdownVisible: false,
         loggingIn: false
       };
+    },
+    methods: {
+      showDropdown: function () {
+        this.dropdownVisible = true;
+      },
+      hideDropdown: function () {
+        loginButtonsSession.closeDropdown();
+      }
     }
   }
+);
+
+var _vueLoggedOutPasswordServiceSeparator = Vue.component('login-buttons-logged-out-password-service-separator',
+{
+  name: 'login-buttons-logged-out-password-service-separator',
+  template: '#login-buttons-logged-out-password-service-separator-template',
+  methods: {
+    createAccount: function () {
+      loginButtonsSession.resetMessages();
+
+      // store values of fields before swtiching to the signup form
+      var username = trimmedElementValueById('login-username');
+      var email = trimmedElementValueById('login-email');
+      var usernameOrEmail = trimmedElementValueById('login-username-or-email');
+      // notably not trimmed. a password could (?) start or end with a space
+      var password = elementValueById('login-password');
+
+      loginButtonsSession.set('inSignupFlow', true);
+      loginButtonsSession.set('inForgotPasswordFlow', false);
+      // force the ui to update so that we have the approprate fields to fill in
+      Tracker.flush();
+
+      // update new fields with appropriate defaults
+      if (username !== null)
+        document.getElementById('login-username').value = username;
+      else if (email !== null)
+        document.getElementById('login-email').value = email;
+      else if (usernameOrEmail !== null)
+        if (usernameOrEmail.indexOf('@') === -1)
+          document.getElementById('login-username').value = usernameOrEmail;
+      else
+        document.getElementById('login-email').value = usernameOrEmail;
+
+      if (password !== null)
+        document.getElementById('login-password').value = password;
+
+      // Force redrawing the `login-dropdown-list` element because of
+      // a bizarre Chrome bug in which part of the DIV is not redrawn
+      // in case you had tried to unsuccessfully log in before
+      // switching to the signup form.
+      //
+      // Found tip on how to force a redraw on
+      // http://stackoverflow.com/questions/3485365/how-can-i-force-webkit-to-redraw-repaint-to-propagate-style-changes/3485654#3485654
+      var redraw = document.getElementById('login-dropdown-list');
+      redraw.style.display = 'none';
+      redraw.offsetHeight; // it seems that this line does nothing but is necessary for the redraw to work
+      redraw.style.display = 'block';
+    }
+  }
+}
+);
+
+var _vueLoggedOutPasswordService = Vue.component('login-buttons-logged-out-password-service',
+{
+  name: 'login-buttons-logged-out-password-service',
+  template: '#login-buttons-logged-out-password-service-template',
+  data: function () {
+    return {
+      inForgotPasswordFlow: false,
+      fields: [],
+      inSignupFlow: false,
+      inLoginFlow: false,
+      showCreateAccountLink: false,
+      showForgotPasswordLink: false
+    }
+  },
+  meteor: {
+    fields: {
+      update() {
+          var loginFields = [
+            {fieldName: 'username-or-email', fieldLabel: 'Username or Email',
+             visible: function () {
+               return _.contains(
+                 ["USERNAME_AND_EMAIL", "USERNAME_AND_OPTIONAL_EMAIL"],
+                 passwordSignupFields());
+             }},
+            {fieldName: 'username', fieldLabel: 'Username',
+             visible: function () {
+               return passwordSignupFields() === "USERNAME_ONLY";
+             }},
+            {fieldName: 'email', fieldLabel: 'Email', inputType: 'email',
+             visible: function () {
+               return passwordSignupFields() === "EMAIL_ONLY";
+             }},
+            {fieldName: 'password', fieldLabel: 'Password', inputType: 'password',
+             visible: function () {
+               return true;
+             }}
+          ];
+
+          var signupFields = [
+            {fieldName: 'username', fieldLabel: 'Username',
+             visible: function () {
+               return _.contains(
+                 ["USERNAME_AND_EMAIL", "USERNAME_AND_OPTIONAL_EMAIL", "USERNAME_ONLY"],
+                 passwordSignupFields());
+             }},
+            {fieldName: 'email', fieldLabel: 'Email', inputType: 'email',
+             visible: function () {
+               return _.contains(
+                 ["USERNAME_AND_EMAIL", "EMAIL_ONLY"],
+                 passwordSignupFields());
+             }},
+            {fieldName: 'email', fieldLabel: 'Email (optional)', inputType: 'email',
+             visible: function () {
+               return passwordSignupFields() === "USERNAME_AND_OPTIONAL_EMAIL";
+             }},
+            {fieldName: 'password', fieldLabel: 'Password', inputType: 'password',
+             visible: function () {
+               return true;
+             }},
+            {fieldName: 'password-again', fieldLabel: 'Password (again)',
+             inputType: 'password',
+             visible: function () {
+               // No need to make users double-enter their password if
+               // they'll necessarily have an email set, since they can use
+               // the "forgot password" flow.
+               return _.contains(
+                 ["USERNAME_AND_OPTIONAL_EMAIL", "USERNAME_ONLY"],
+                 passwordSignupFields());
+             }}
+          ];
+
+          return loginButtonsSession.get('inSignupFlow') ? signupFields : loginFields;
+      }
+    }
+  }
+}
+);
+
+var _vueFormField = Vue.component('login-buttons-form-field',
+{
+  name: 'login-buttons-form-field',
+  template: '#login-buttons-form-field-template',
+  props: ['field'],
+  data: function () {
+    return {
+      visible: true
+    }
+  }
+}
 );
 
 var _vueLoggedOutAllServices = Vue.component('login-buttons-logged-out-all-services',
@@ -100,7 +254,8 @@ var _vueLoggedOutAllServices = Vue.component('login-buttons-logged-out-all-servi
   data: function () {
     return {
       services: getLoginServices(),
-      hasPasswordService: hasPasswordService()
+      hasPasswordService: hasPasswordService(),
+      hasOtherServices: getLoginServices().length > 1
     }
   },
   methods: {
@@ -194,6 +349,13 @@ var _vueLoggingIn = Vue.component('login-buttons-logging-in',
 {
   name: 'login-buttons-logging-in',
   template: "#login-buttons-logging-in-template"
+}
+);
+
+var _vueLoggingInSingleLoginButton = Vue.component('login-buttons-logging-in-single-button',
+{
+  name: 'login-buttons-logging-in-single-button',
+  template: "#login-buttons-logging-in-single-button-template"
 }
 );
 

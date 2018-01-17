@@ -1,5 +1,7 @@
 <body>
 
+  <!-- Selector -->
+
   <script type="text/x-template" id="login-buttons-template">
       <!-- Must have only one root element in each template -->
       <div id="login-buttons" class="login-buttons-dropdown-align-right">
@@ -12,16 +14,11 @@
       </div>
   </script>
 
-  <script type="text/x-template" id="login-buttons-with-only-one-button-template">
-    <div class="login-buttons-with-only-one-button">
-      <div v-if="loggingIn">
-        _loginButtonsLoggingInSingleLoginButton
-      </div>
-      <div v-else>
-        <login-buttons-logged-out-single-login-button></login-buttons-logged-out-single-login-button>
-      </div>
-    </div>
+  <script type="text/x-template" id="no-login-services-template">
+    <div class="no-services">No login services configured</div>
   </script>
+
+  <!-- Logged out, need to login -->
 
   <script type="text/x-template" id="login-buttons-logged-out-template">
     <div v-if="configurationLoaded">
@@ -32,8 +29,15 @@
     </div>
   </script>
 
-  <script type="text/x-template" id="no-login-services-template">
-    <div class="no-services">No login services configured</div>
+  <script type="text/x-template" id="login-buttons-with-only-one-button-template">
+    <div class="login-buttons-with-only-one-button">
+      <div v-if="loggingIn">
+         <login-buttons-logging-in-single-login-button></login-buttons-logging-in-single-login-button>
+      </div>
+      <div v-else>
+        <login-buttons-logged-out-single-login-button></login-buttons-logged-out-single-login-button>
+      </div>
+    </div>
   </script>
 
   <script type="text/x-template" id="login-buttons-logged-in-template">
