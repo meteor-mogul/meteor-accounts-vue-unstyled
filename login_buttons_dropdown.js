@@ -2,65 +2,82 @@ import { Vue } from 'meteor/meteormogul:vue-dist';
 import VueMeteorTracker from 'vue-meteor-tracker';
 Vue.use(VueMeteorTracker);
 
-var MMDEBUG = true;
+import { MMDEBUG } from './main.js';
 MMDEBUG && console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_dropdown.js");
 
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
 
-/*
-// events shared between loginButtonsLoggedOutDropdown and
-// loginButtonsLoggedInDropdown
-Template.loginButtons.events({
-  'click #login-name-link, click #login-sign-in-link': function () {
-    loginButtonsSession.set('dropdownVisible', true);
-  },
-  'click .login-close-text': function () {
-    loginButtonsSession.closeDropdown();
+var _vueLoggedInDropdown = Vue.component('login-buttons-logged-in-dropdown',
+{
+    name: 'login-buttons-logged-in-dropdown',
+    template: "#login-buttons-logged-in-dropdown-template",
+    data: function () {
+      return {
+        displayName: null,
+        dropdownVisible: false,
+        inMessageOnlyFlow: false,
+        inChangePasswordFlow: false
+      }
+    },
+    meteor: {
+        displayName: {
+          update () {
+            return displayName;
+          }
+        },
+        dropdownVisible: {
+          update() {
+            return loginButtonsSession.get('dropdownVisible');
+          }
+        },
+        inMessageOnlyFlow: {
+          update() {
+            return loginButtonsSession.get('inMessageOnlyFlow');
+          }
+        },
+        inChangePasswordFlow: {
+          update() {
+            return loginButtonsSession.get('inChangePasswordFlow');
+          }
+        }
+    }
+}
+);
+
+var _vueLoggedInDropdownActions = Vue.component('login-buttons-logged-in-dropdown-actions',
+  {
+    name: 'login-buttons-logged-in-dropdown-actions',
+    template: '#login-buttons-logged-in-dropdown-actions-template',
+    data: function () {
+      return {
+        allowChangingPassword: false,
+      }
+    },
+    meteor: {
+      allowChangingPassword: {
+        update() {
+          // it would be more correct to check whether the user has a password set,
+          // but in order to do that we'd have to send more data down to the client,
+          // and it'd be preferable not to send down the entire service.password document.
+          //
+          // instead we use the heuristic: if the user has a username or email set.
+          var user = Meteor.user();
+          return user.username || (user.emails && user.emails[0] && user.emails[0].address);
+        }
+      }
+    },
+    methods: {
+      changePassword: function () {
+        loginButtonsSession.resetMessages();
+        loginButtonsSession.set('inChangePasswordFlow', true);
+      },
+      logout: function () {
+        Meteor.logout(function () { loginButtonsSession.closeDropdown(); });
+      }
+    }
   }
-});
-
-
-//
-// loginButtonsLoggedInDropdown template and related
-//
-
-Template._loginButtonsLoggedInDropdown.events({
-  'click #login-buttons-open-change-password': function() {
-    loginButtonsSession.resetMessages();
-    loginButtonsSession.set('inChangePasswordFlow', true);
-  }
-});
-
-Template._loginButtonsLoggedInDropdown.helpers({
-  displayName: displayName,
-
-  inChangePasswordFlow: function () {
-    return loginButtonsSession.get('inChangePasswordFlow');
-  },
-
-  inMessageOnlyFlow: function () {
-    return loginButtonsSession.get('inMessageOnlyFlow');
-  },
-
-  dropdownVisible: function () {
-    return loginButtonsSession.get('dropdownVisible');
-  }
-});
-
-Template._loginButtonsLoggedInDropdownActions.helpers({
-  allowChangingPassword: function () {
-    // it would be more correct to check whether the user has a password set,
-    // but in order to do that we'd have to send more data down to the client,
-    // and it'd be preferable not to send down the entire service.password document.
-    //
-    // instead we use the heuristic: if the user has a username or email set.
-    var user = Meteor.user();
-    return user.username || (user.emails && user.emails[0] && user.emails[0].address);
-  }
-});
-
-*/
+);
 
 var _vueLoggedOutDropdown = Vue.component('login-buttons-logged-out-dropdown',
   {
@@ -86,14 +103,226 @@ var _vueLoggedOutDropdown = Vue.component('login-buttons-logged-out-dropdown',
     },
     methods: {
       showDropdown: function () {
-        this.dropdownVisible = true;
+        MMDEBUG && console.log('showDropdown');
+        loginButtonsSession.set('dropdownVisible', true);
       },
       hideDropdown: function () {
+        MMDEBUG && console.log('closeDropdown');
         loginButtonsSession.closeDropdown();
       }
     }
   }
 );
+
+var _vueLoggedOutPasswordService = Vue.component('login-buttons-logged-out-password-service',
+{
+  name: 'login-buttons-logged-out-password-service',
+  template: '#login-buttons-logged-out-password-service-template',
+  data: function () {
+    return {
+      inForgotPasswordFlow: false,
+      fields: [],
+      inSignupFlow: false,
+      inLoginFlow: false,
+      showCreateAccountLink: false,
+      showForgotPasswordLink: false
+    }
+  },
+  meteor: {
+    fields: {
+      update() {
+          var loginFields = [
+            {fieldName: 'username-or-email', fieldLabel: 'Username or Email',
+             visible: function () {
+               return _.contains(
+                 ["USERNAME_AND_EMAIL", "USERNAME_AND_OPTIONAL_EMAIL"],
+                 passwordSignupFields());
+             }},
+            {fieldName: 'username', fieldLabel: 'Username',
+             visible: function () {
+               return passwordSignupFields() === "USERNAME_ONLY";
+             }},
+            {fieldName: 'email', fieldLabel: 'Email', inputType: 'email',
+             visible: function () {
+               return passwordSignupFields() === "EMAIL_ONLY";
+             }},
+            {fieldName: 'password', fieldLabel: 'Password', inputType: 'password',
+             visible: function () {
+               return true;
+             }}
+          ];
+
+          var signupFields = [
+            {fieldName: 'username', fieldLabel: 'Username',
+             visible: function () {
+               return _.contains(
+                 ["USERNAME_AND_EMAIL", "USERNAME_AND_OPTIONAL_EMAIL", "USERNAME_ONLY"],
+                 passwordSignupFields());
+             }},
+            {fieldName: 'email', fieldLabel: 'Email', inputType: 'email',
+             visible: function () {
+               return _.contains(
+                 ["USERNAME_AND_EMAIL", "EMAIL_ONLY"],
+                 passwordSignupFields());
+             }},
+            {fieldName: 'email', fieldLabel: 'Email (optional)', inputType: 'email',
+             visible: function () {
+               return passwordSignupFields() === "USERNAME_AND_OPTIONAL_EMAIL";
+             }},
+            {fieldName: 'password', fieldLabel: 'Password', inputType: 'password',
+             visible: function () {
+               return true;
+             }},
+            {fieldName: 'password-again', fieldLabel: 'Password (again)',
+             inputType: 'password',
+             visible: function () {
+               // No need to make users double-enter their password if
+               // they'll necessarily have an email set, since they can use
+               // the "forgot password" flow.
+               return _.contains(
+                 ["USERNAME_AND_OPTIONAL_EMAIL", "USERNAME_ONLY"],
+                 passwordSignupFields());
+             }}
+          ];
+
+          return loginButtonsSession.get('inSignupFlow') ? signupFields : loginFields;
+      }
+    },
+    inForgotPasswordFlow: {
+      update() {
+        return loginButtonsSession.get('inForgotPasswordFlow');
+      }
+    },
+    inLoginFlow: {
+      update() {
+        return !loginButtonsSession.get('inSignupFlow') && !loginButtonsSession.get('inForgotPasswordFlow');
+      }
+    },
+    inSignupFlow: {
+      update() {
+        return loginButtonsSession.get('inSignupFlow');
+      }
+    },
+    showCreateAccountLink: {
+      update() {
+        return !Accounts._options.forbidClientAccountCreation;
+      }
+    },
+    showForgotPasswordLink: {
+      update() {
+        return _.contains(
+          ["USERNAME_AND_EMAIL", "USERNAME_AND_OPTIONAL_EMAIL", "EMAIL_ONLY"],
+          passwordSignupFields());
+      }
+    }
+  },
+  methods: {
+    createAccount: function () {
+      loginButtonsSession.resetMessages();
+
+      // store values of fields before swtiching to the signup form
+      var username = trimmedElementValueById('login-username');
+      var email = trimmedElementValueById('login-email');
+      var usernameOrEmail = trimmedElementValueById('login-username-or-email');
+      // notably not trimmed. a password could (?) start or end with a space
+      var password = elementValueById('login-password');
+
+      loginButtonsSession.set('inSignupFlow', true);
+      loginButtonsSession.set('inForgotPasswordFlow', false);
+      // force the ui to update so that we have the approprate fields to fill in
+      Tracker.flush();
+
+      // update new fields with appropriate defaults
+      if (username !== null)
+        document.getElementById('login-username').value = username;
+      else if (email !== null)
+        document.getElementById('login-email').value = email;
+      else if (usernameOrEmail !== null)
+        if (usernameOrEmail.indexOf('@') === -1)
+          document.getElementById('login-username').value = usernameOrEmail;
+      else
+        document.getElementById('login-email').value = usernameOrEmail;
+
+      if (password !== null)
+        document.getElementById('login-password').value = password;
+
+      // Force redrawing the `login-dropdown-list` element because of
+      // a bizarre Chrome bug in which part of the DIV is not redrawn
+      // in case you had tried to unsuccessfully log in before
+      // switching to the signup form.
+      //
+      // Found tip on how to force a redraw on
+      // http://stackoverflow.com/questions/3485365/how-can-i-force-webkit-to-redraw-repaint-to-propagate-style-changes/3485654#3485654
+      var redraw = document.getElementById('login-dropdown-list');
+      redraw.style.display = 'none';
+      redraw.offsetHeight; // it seems that this line does nothing but is necessary for the redraw to work
+      redraw.style.display = 'block';
+    },
+    login: function () {
+      loginOrSignup();
+    }
+  }
+}
+);
+
+var _vueForgotPasswordForm = Vue.component('forgot-password-form',
+{
+  name: 'forgot-password-form',
+  template: '#forgot-password-form-template'
+}
+);
+
+var _vueBackToLoginLink = Vue.component('login-buttons-back-to-login-link',
+{
+  name: 'login-buttons-back-to-login-link',
+  template: '#login-buttons-back-to-login-link-template',
+  methods: {
+    login: function () {
+      loginButtonsSession.resetMessages();
+
+      var username = trimmedElementValueById('login-username');
+      var email = trimmedElementValueById('login-email')
+            || trimmedElementValueById('forgot-password-email'); // Ughh. Standardize on names?
+      // notably not trimmed. a password could (?) start or end with a space
+      var password = elementValueById('login-password');
+
+      loginButtonsSession.set('inSignupFlow', false);
+      loginButtonsSession.set('inForgotPasswordFlow', false);
+      // force the ui to update so that we have the approprate fields to fill in
+      Tracker.flush();
+
+      if (document.getElementById('login-username') && username !== null)
+        document.getElementById('login-username').value = username;
+      if (document.getElementById('login-email') && email !== null)
+        document.getElementById('login-email').value = email;
+
+      var usernameOrEmailInput = document.getElementById('login-username-or-email');
+      if (usernameOrEmailInput) {
+        if (email !== null)
+          usernameOrEmailInput.value = email;
+        if (username !== null)
+          usernameOrEmailInput.value = username;
+      }
+
+      if (password !== null)
+        document.getElementById('login-password').value = password;
+    }
+  }
+}
+);
+
+var _vueChangePassword = Vue.component('login-buttons-change-password',
+{
+  name: 'login-buttons-change-password',
+  template: '#login-buttons-change-password-template',
+  data: function () {
+    return {
+      fields: ['one']
+    };
+  }
+}
+);
+
 
 /*
 //

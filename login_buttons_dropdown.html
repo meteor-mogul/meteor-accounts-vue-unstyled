@@ -31,7 +31,7 @@
   <script type="text/x-template" id="login-buttons-logged-in-dropdown-actions-template">
     <div>
       <div v-if="allowChangingPassword">
-        <div class="login-button" id="login-buttons-open-change-password">
+        <div class="login-button" id="login-buttons-open-change-password" @click="changePassword">
           Change password
         </div>
       </div>
@@ -78,19 +78,17 @@
   <div>
     <div v-for="service in services">
       <div v-if="isPasswordService(service)">
-        Is password service.
         <div v-if="hasOtherServices">
           <login-buttons-logged-out-password-service-separator></login-buttons-logged-out-password-service-separator>
         </div>
         <login-buttons-logged-out-password-service></login-buttons-logged-out-password-service>
       </div>
       <div v-else>
-         _loginButtonsLoggedOutSingleLoginButton
+         <login-buttons-logged-out-single-login-button></login-buttons-logged-out-single-login-button>
       </div>
     </div>
 
     <div v-if="!hasPasswordService">
-      No password service.
       <login-buttons-messages :errorMessage="'Error Message Here'"
                               :infoMessage="'Info Message Here'"></login-buttons-messages>
     </div>
@@ -108,12 +106,12 @@
 <script type="text/x-template" id="login-buttons-logged-out-password-service-template">
   <div>
     <div v-if="inForgotPasswordFlow">
-      _forgotPasswordFlow
+      <forgot-password-form></forgot-password-form>
     </div>
     <div v-else>
       <form class="login-form login-password-form">
         <div v-for="field in fields">
-          <login-buttons-form-field v-bind:field="field"></login-buttons-form-field>
+          <login-buttons-form-field :field="field"></login-buttons-form-field>
         </div>
 
         <login-buttons-messages></login-buttons-messages>
@@ -121,6 +119,7 @@
         <button
           class="login-button login-button-form-submit"
           id="login-buttons-password"
+          @click="login"
         >
           <div v-if="inSignupFlow">
             Create account
@@ -133,7 +132,7 @@
         <div v-if="inLoginFlow">
           <div v-if="showCreateAccountLink">
             <div class="additional-link-container">
-              <a id="signup-link" class="additional-link" v-on:click="createAccount">Create account</a>
+              <a id="signup-link" class="additional-link" @click="createAccount">Create account</a>
             </div>
           </div>
 
@@ -145,7 +144,7 @@
         </div>
 
         <div v-if="inSignupFlow">
-          _loginButtonsBackToLoginLink
+          <login-buttons-back-to-login-link></login-buttons-back-to-login-link>
         </div>
       </form>
     </div>
@@ -165,71 +164,40 @@
   </div>
 </script>
 
-<template name="_loginButtonsLoggedOutPasswordService">
-  {{#if inForgotPasswordFlow}}
-    {{> _forgotPasswordForm}}
-  {{else}}
-    <form class="login-form login-password-form">
-      {{#each fields}}
-        {{> _loginButtonsFormField}}
-      {{/each}}
-
-      {{> _loginButtonsMessages}}
-
-      <button
-        class="login-button login-button-form-submit"
-        id="login-buttons-password"
-      >
-        {{#if inSignupFlow}}
-          Create account
-        {{else}}
-          Sign in
-        {{/if}}
-      </button>
-
-      {{#if inLoginFlow}}
-        {{#if showCreateAccountLink}}
-          <div class="additional-link-container">
-            <a id="signup-link" class="additional-link">Create account</a>
-          </div>
-        {{/if}}
-
-        {{#if showForgotPasswordLink}}
-          <div class="additional-link-container">
-            <a id="forgot-password-link" class="additional-link">Forgot password</a>
-          </div>
-        {{/if}}
-      {{/if}}
-
-      {{#if inSignupFlow}}
-        {{> _loginButtonsBackToLoginLink}}
-      {{/if}}
-    </form>
-  {{/if}}
-</template>
-
-<template name="_forgotPasswordForm">
+<script type="text/x-template" id="forgot-password-form-template">
   <div class="login-form">
     <div id="forgot-password-email-label-and-input"> {{! XXX we should probably use loginButtonsFormField }}
       <label id="forgot-password-email-label" for="forgot-password-email">Email</label>
       <input id="forgot-password-email" type="email"/>
     </div>
 
-    {{> _loginButtonsMessages}}
+    <login-buttons-messages></login-buttons-messages>
 
     <div class="login-button login-button-form-submit" id="login-buttons-forgot-password">
       Reset password
     </div>
 
-    {{> _loginButtonsBackToLoginLink}}
+    <login-buttons-back-to-login-link></login-buttons-back-to-login-link>
   </div>
-</template>
+</script>
 
-<template name="_loginButtonsBackToLoginLink">
+<script type="text/x-template" id="login-buttons-back-to-login-link-template">
   <div class="additional-link-container">
-    <a id="back-to-login-link" class="additional-link">Sign in</a>
+    <a id="back-to-login-link" class="additional-link" @click="login">Sign in</a>
   </div>
-</template>
+</script>
+
+<script type="text/x-template" id="login-buttons-change-password-template">
+  <div v-for="field in fields">
+    _loginButtonsFormField
+  </div>
+
+  <login-buttons-messages></login-buttons-messages>
+
+  <div class="login-button login-button-form-submit" id="login-buttons-do-change-password">
+    Change password
+  </div>
+</script>
 
 <template name="_loginButtonsFormField">
   {{#if visible}}
@@ -242,15 +210,4 @@
   {{/if}}
 </template>
 
-<template name="_loginButtonsChangePassword">
-  {{#each fields}}
-    {{> _loginButtonsFormField}}
-  {{/each}}
-
-  {{> _loginButtonsMessages}}
-
-  <div class="login-button login-button-form-submit" id="login-buttons-do-change-password">
-    Change password
-  </div>
-</template>
 </body>

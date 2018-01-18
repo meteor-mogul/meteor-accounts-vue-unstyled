@@ -1,5 +1,13 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.15] - 2018-01-17
+
+- More progress.
+- Still no joy with the import / export business between package and app.
+- But reactivity seems to be working.
+- Almost all templates re-written in Vue.  Now wiring up methods.
+- Stuck right now on how to interpolate with Vue into HTML attributes.
+
 ## [0.0.14] - 2018-01-17
 
 - Bump package version #

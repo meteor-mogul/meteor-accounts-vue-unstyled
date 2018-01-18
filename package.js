@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Unstyled VueJS version of login widgets for Meteor Mogul",
-  version: "0.0.14",
+  version: "0.0.15",
   git: "https://github.com/meteor-mogul/meteor-accounts-vue-unstyled.git",
   name: "meteormogul:accounts-vue-unstyled"
 });

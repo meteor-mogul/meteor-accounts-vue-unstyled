@@ -1,14 +1,17 @@
 // Main file of package
-console.log("Running meteormogul:accounts-vue-unstyled/main.js");
 
-// for debugging in Meteor Mogul. true turns on console debugging messages.
+// for debugging in Meteor Mogul. true turns on debugging.
+// Meteor Mogul console debugging
+// I find this to be a convenient entry point into the JavaScript debugger
+// in Chrome and Firefox.  A console log at various points of interest makes
+// it easy to set line breakpoints for closer inspection.
 var MMDEBUG = true;
+MMDEBUG && console.log("Running meteormogul:accounts-vue-unstyled/main.js");
 
-// Giving up on this...
-// export const LoginButtons = _vueLoginButtons;
-// ... and instead just declaring a global variable
+// still have issues with this...
+import { _vueLoginButtons } from './login_buttons.js';
 LoginButtons = _vueLoginButtons;
-console.log('{ LoginButtons } from meteormogul:accounts-vue-unstyled/main.js', LoginButtons);
 
-// share with package files
-export { MMDEBUG };
+// export symbols
+MMDEBUG && console.log('export { LoginButtons } from meteormogul:accounts-vue-unstyled/main.js', LoginButtons);
+export { MMDEBUG, LoginButtons };
