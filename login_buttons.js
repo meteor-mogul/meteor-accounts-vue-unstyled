@@ -13,9 +13,8 @@ Vue.use(VueMeteorTracker);
 
 // Use symbols from other files
 import { _vueLoggedOutDropdown } from './login_buttons_dropdown.js';
-
-// for debugging in Meteor Mogul. true turns on console debugging messages.
-var MMDEBUG = true;
+import { _vueLoggedOutSingleLoginButton } from './login_buttons_single.js';
+import { MMDEBUG } from './main.js';
 MMDEBUG && console.log("Running meteormogul:accounts-vue-unstyled/login_buttons.js");
 
 // for convenience

@@ -2,8 +2,9 @@ import { Vue } from 'meteor/meteormogul:vue-dist';
 // Allow Vue to see Meteor reactive data
 import VueMeteorTracker from 'vue-meteor-tracker';
 Vue.use(VueMeteorTracker);
+import { MMDEBUG } from './main.js';
 
-console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_single.js");
+MMDEBUG && console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_single.js");
 
 // for convenience
 var loginButtonsSession = Accounts._loginButtonsSession;
@@ -165,3 +166,5 @@ Template._loginButtonsLoggedOutSingleLoginButton.helpers({
   }
 });
 */
+
+export { _vueLoggedOutSingleLoginButton };

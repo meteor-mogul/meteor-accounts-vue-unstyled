@@ -1,6 +1,6 @@
 Package.describe({
   summary: "Unstyled VueJS version of login widgets for Meteor Mogul",
-  version: "0.0.6",
+  version: "0.0.14",
   git: "https://github.com/meteor-mogul/meteor-accounts-vue-unstyled.git",
   name: "meteormogul:accounts-vue-unstyled"
 });
@@ -37,6 +37,7 @@ Package.onUse(function (api) {
   // Allow us to use VueJS components on the client
   api.use('meteormogul:vue-dist@2.5.15', 'client');
 
+  // Don't compile Blaze templates in .html files
   api.use('static-html@1.2.2', 'client');
 
   // This loads files in this order, so you can define things first and
@@ -69,7 +70,7 @@ Package.onUse(function (api) {
 
   // NOTE: Do not try mainModule or bad things will happen.
   // This seems to get evaluated before it should be.  Despite all the
-  // api.use stuff above, none of the symbols it needed were available.
+  // api.use stuff above, none of the symbols needed were available.
   // So I'm giving up on this and just using addFiles, which seems to
   // leave the importing until sybols are available and everything just
   // works fine.

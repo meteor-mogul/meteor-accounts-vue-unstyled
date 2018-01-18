@@ -1,5 +1,9 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.14] - 2018-01-17
+
+- Bump package version #
+
 ## [0.0.13] - 2018-01-17
 
 - Added debugging, moving things around.
