@@ -71,6 +71,7 @@ _vueLoginButtons = Vue.component('login-buttons',
     // it will notify Vue that the value has updated.
     data: function() {
       return {
+        dropdownAlignClass: `login-buttons-dropdown-align-${this.align}`,
         currentUser: null,
         configurationLoaded: false,
         loggingInOrOut: false,
@@ -103,6 +104,12 @@ _vueLoginButtons = Vue.component('login-buttons',
           return getLoginServices().length;
         }
       }
+    },
+    props: {
+        align: {
+          type: String,
+          default: 'left'
+        }
     }
   }
 );
@@ -125,19 +132,6 @@ var _vueLoggedOutPasswordServiceSeparator = Vue.component('login-buttons-logged-
 {
   name: 'login-buttons-logged-out-password-service-separator',
   template: '#login-buttons-logged-out-password-service-separator-template'
-}
-);
-
-var _vueFormField = Vue.component('login-buttons-form-field',
-{
-  name: 'login-buttons-form-field',
-  template: '#login-buttons-form-field-template',
-  props: ['field'],
-  data: function () {
-    return {
-      visible: true
-    }
-  }
 }
 );
 

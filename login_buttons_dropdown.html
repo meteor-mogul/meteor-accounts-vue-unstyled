@@ -17,7 +17,7 @@
           </div>
           <div v-else>
             <div v-if="inChangePasswordFlow">
-              _loginButtonsChangePassword
+              <login-buttons-change-password></login-buttons-change-password>
             </div>
             <div v-else>
               <login-buttons-logged-in-dropdown-actions></login-buttons-logged-in-dropdown-actions>
@@ -36,7 +36,7 @@
         </div>
       </div>
 
-      <div class="login-button" id="login-buttons-logout" v-on:click="logout">
+      <div class="login-button" id="login-buttons-logout" @click="logout">
         Sign out
       </div>
 
@@ -48,7 +48,7 @@
 <!-- LOGGED OUT -->
 <!--            -->
 <script type="text/x-template" id="login-buttons-logged-out-dropdown-template">
-  <div class="login-link-and-dropdown-list"> <!--  {{additionalClasses}} -->
+  <div :class="loginLinkClass()">
     <div v-if="dropdownVisible">
       <!-- This text is covered by the dropdown, but duplicating it here
            makes the position of "Close" match the position of this text. -->
@@ -152,14 +152,12 @@
 </script>
 
 <script type="text/x-template" id="login-buttons-form-field-template">
-  <div>
-    <div v-if="field.visible">
-      <div ><!-- id="login-{{fieldName}}-label-and-input" -->
-        <label ><!-- id="login-{{fieldName}}-label" for="login-{{fieldName}}" -->
-          {{field.fieldLabel}}
-        </label>
-        <input  /><!-- id="login-{{fieldName}}" type="{{inputType}}" -->
-      </div>
+  <div v-if="field.visible">
+    <div :id="loginFieldNameLabelInput">
+      <label :id="loginFieldNameLabel" :for="loginFieldName">
+        {{field.fieldLabel}}
+      </label>
+      <input :id="loginFieldName" :type="inputType" />
     </div>
   </div>
 </script>
@@ -189,7 +187,7 @@
 
 <script type="text/x-template" id="login-buttons-change-password-template">
   <div v-for="field in fields">
-    _loginButtonsFormField
+    <login-buttons-form-field></login-buttons-form-field>
   </div>
 
   <login-buttons-messages></login-buttons-messages>
@@ -198,16 +196,5 @@
     Change password
   </div>
 </script>
-
-<template name="_loginButtonsFormField">
-  {{#if visible}}
-    <div id="login-{{fieldName}}-label-and-input">
-      <label id="login-{{fieldName}}-label" for="login-{{fieldName}}">
-        {{fieldLabel}}
-      </label>
-      <input id="login-{{fieldName}}" type="{{inputType}}" />
-    </div>
-  {{/if}}
-</template>
 
 </body>

@@ -4,7 +4,7 @@
 
   <script type="text/x-template" id="login-buttons-template">
       <!-- Must have only one root element in each template -->
-      <div id="login-buttons" class="login-buttons-dropdown-align-right">
+      <div id="login-buttons" :class="dropdownAlignClass">
         <login-buttons-selector
           :currentUser="currentUser"
           :configurationLoaded="configurationLoaded"

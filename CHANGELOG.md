@@ -1,5 +1,11 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.16] - 2018-01-18
+
+- Even more progress.
+- Figured out v-bind on HTML attributes.
+- Playing nicely with meteor-accounts-vue so looks good.
+
 ## [0.0.15] - 2018-01-17
 
 - More progress.

@@ -109,6 +109,22 @@ var _vueLoggedOutDropdown = Vue.component('login-buttons-logged-out-dropdown',
       hideDropdown: function () {
         MMDEBUG && console.log('closeDropdown');
         loginButtonsSession.closeDropdown();
+      },
+      loginLinkClass: function () {
+        var additionalClasses = function () {
+          if (!hasPasswordService()) {
+            return '';
+          } else {
+            if (loginButtonsSession.get('inSignupFlow')) {
+              return 'login-form-create-account';
+            } else if (loginButtonsSession.get('inForgotPasswordFlow')) {
+              return 'login-form-forgot-password';
+            } else {
+              return 'login-form-sign-in';
+            }
+          }
+        }
+        return `login-link-and-dropdown-list ${additionalClasses()}`;
       }
     }
   }
@@ -133,56 +149,47 @@ var _vueLoggedOutPasswordService = Vue.component('login-buttons-logged-out-passw
       update() {
           var loginFields = [
             {fieldName: 'username-or-email', fieldLabel: 'Username or Email',
-             visible: function () {
-               return _.contains(
+             visible: _.contains(
                  ["USERNAME_AND_EMAIL", "USERNAME_AND_OPTIONAL_EMAIL"],
-                 passwordSignupFields());
-             }},
+                 passwordSignupFields())
+             },
             {fieldName: 'username', fieldLabel: 'Username',
-             visible: function () {
-               return passwordSignupFields() === "USERNAME_ONLY";
-             }},
+             visible: passwordSignupFields() === "USERNAME_ONLY"
+             },
             {fieldName: 'email', fieldLabel: 'Email', inputType: 'email',
-             visible: function () {
-               return passwordSignupFields() === "EMAIL_ONLY";
-             }},
+             visible: passwordSignupFields() === "EMAIL_ONLY"
+             },
             {fieldName: 'password', fieldLabel: 'Password', inputType: 'password',
-             visible: function () {
-               return true;
-             }}
+             visible: true
+             }
           ];
 
           var signupFields = [
             {fieldName: 'username', fieldLabel: 'Username',
-             visible: function () {
-               return _.contains(
+             visible: _.contains(
                  ["USERNAME_AND_EMAIL", "USERNAME_AND_OPTIONAL_EMAIL", "USERNAME_ONLY"],
-                 passwordSignupFields());
-             }},
+                 passwordSignupFields())
+             },
             {fieldName: 'email', fieldLabel: 'Email', inputType: 'email',
-             visible: function () {
-               return _.contains(
+             visible: _.contains(
                  ["USERNAME_AND_EMAIL", "EMAIL_ONLY"],
-                 passwordSignupFields());
-             }},
+                 passwordSignupFields())
+             },
             {fieldName: 'email', fieldLabel: 'Email (optional)', inputType: 'email',
-             visible: function () {
-               return passwordSignupFields() === "USERNAME_AND_OPTIONAL_EMAIL";
-             }},
+             visible: passwordSignupFields() === "USERNAME_AND_OPTIONAL_EMAIL"
+             },
             {fieldName: 'password', fieldLabel: 'Password', inputType: 'password',
-             visible: function () {
-               return true;
-             }},
+             visible: true
+             },
             {fieldName: 'password-again', fieldLabel: 'Password (again)',
              inputType: 'password',
-             visible: function () {
-               // No need to make users double-enter their password if
-               // they'll necessarily have an email set, since they can use
-               // the "forgot password" flow.
-               return _.contains(
+             // No need to make users double-enter their password if
+             // they'll necessarily have an email set, since they can use
+             // the "forgot password" flow.
+             visible: _.contains(
                  ["USERNAME_AND_OPTIONAL_EMAIL", "USERNAME_ONLY"],
-                 passwordSignupFields());
-             }}
+                 passwordSignupFields())
+             }
           ];
 
           return loginButtonsSession.get('inSignupFlow') ? signupFields : loginFields;
@@ -560,7 +567,27 @@ Template._loginButtonsLoggedOutPasswordService.helpers({
       passwordSignupFields());
   }
 });
+*/
 
+var _vueFormField = Vue.component('login-buttons-form-field',
+{
+  name: 'login-buttons-form-field',
+  template: '#login-buttons-form-field-template',
+  props: ['field'],
+  data: function () {
+    // MMDEBUG && console.log('login-buttons-form-field data this:', this);
+    return {
+      loginFieldNameLabelInput: `login-${this.field.fieldName}-label-and-input`,
+      loginFieldNameLabel: `login-${this.field.fieldName}-label`,
+      loginFieldName: `login-${this.field.fieldName}`,
+      inputType: this.inputType || "text"
+    };
+  }
+}
+);
+
+
+/*
 Template._loginButtonsFormField.helpers({
   inputType: function () {
     return this.inputType || "text";
