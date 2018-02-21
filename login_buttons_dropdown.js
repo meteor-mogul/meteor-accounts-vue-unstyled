@@ -23,7 +23,7 @@ var _vueLoggedInDropdown = Vue.component('login-buttons-logged-in-dropdown',
     meteor: {
         displayName: {
           update () {
-            return displayName;
+            return displayName();
           }
         },
         dropdownVisible: {
@@ -41,6 +41,14 @@ var _vueLoggedInDropdown = Vue.component('login-buttons-logged-in-dropdown',
             return loginButtonsSession.get('inChangePasswordFlow');
           }
         }
+    },
+    methods: {
+      showDropdown: function () {
+        loginButtonsSession.set('dropdownVisible', true);
+      },
+      hideDropdown: function() {
+        loginButtonsSession.closeDropdown();
+      }
     }
 }
 );
@@ -663,6 +671,7 @@ var loginOrSignup = function () {
 };
 
 var login = function () {
+  MMDEBUG && console.log('login');
   loginButtonsSession.resetMessages();
 
   var username = trimmedElementValueById('login-username');
@@ -670,6 +679,8 @@ var login = function () {
   var usernameOrEmail = trimmedElementValueById('login-username-or-email');
   // notably not trimmed. a password could (?) start or end with a space
   var password = elementValueById('login-password');
+
+  MMDEBUG && console.log('username, email, usernameOrEmail, password: ',username, email, usernameOrEmail, password);
 
   var loginSelector;
   if (username !== null) {
@@ -692,6 +703,8 @@ var login = function () {
   } else {
     throw new Error("Unexpected -- no element to use as a login user selector");
   }
+
+  MMDEBUG && console.log('loginSelector, password: ', loginSelector, password);
 
   Meteor.loginWithPassword(loginSelector, password, function (error, result) {
     if (error) {

@@ -244,7 +244,7 @@ var _vueLoggedInSingle = Vue.component('login-buttons-logged-in-single-logout',
     template: "#login-buttons-logged-in-single-logout-template",
     data: function () {
       return {
-        displayName: "Display Name"
+        displayName: displayName()
       }
     }
 }
