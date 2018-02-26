@@ -45,17 +45,11 @@ var _vueLoggedInDropdown = Vue.component('login-buttons-logged-in-dropdown',
     },
     methods: {
       showDropdown: function () {
-<<<<<<< HEAD
         MMDEBUG && console.log('showDropdown');
         loginButtonsSession.set('dropdownVisible', true);
       },
       hideDropdown: function () {
         MMDEBUG && console.log('closeDropdown');
-=======
-        loginButtonsSession.set('dropdownVisible', true);
-      },
-      hideDropdown: function() {
->>>>>>> 1535cac5f7e9078f14c2a06dd6b7ef773901d607
         loginButtonsSession.closeDropdown();
       }
     }

@@ -4,21 +4,13 @@
 <!--           -->
   <script type="text/x-template" id="login-buttons-logged-in-dropdown-template">
     <div class="login-link-and-dropdown-list">
-<<<<<<< HEAD
-      <a class="login-link-text" id="login-name-link" v-on:click="showDropdown">
-=======
       <a class="login-link-text" id="login-name-link" @click="showDropdown">
->>>>>>> 1535cac5f7e9078f14c2a06dd6b7ef773901d607
         {{displayName}} ▾
       </a>
 
       <div v-if="dropdownVisible">
         <div id="login-dropdown-list" class="accounts-dialog">
-<<<<<<< HEAD
-          <a class="login-close-text" v-on:click="hideDropdown">Close</a>
-=======
           <a class="login-close-text" @click="hideDropdown">Close</a>
->>>>>>> 1535cac5f7e9078f14c2a06dd6b7ef773901d607
           <div class="login-close-text-clear"></div>
           <div v-if="inMessageOnlyFlow">
             <login-buttons-messages></login-buttons-messages>
