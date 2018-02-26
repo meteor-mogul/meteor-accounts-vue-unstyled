@@ -1,4 +1,6 @@
-# Meteor Mogul meteor-accounts-vue-unstyled
+# [WIP] Meteor Mogul meteor-accounts-vue-unstyled
+
+[NOTE: This is a work in progress.]
 
 This provides a user interface to the Meteor Accounts system.
 
