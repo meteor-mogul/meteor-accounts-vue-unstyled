@@ -1,5 +1,9 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.20] - 2018-01-26
+
+- Show error messages.
+
 ## [0.0.19] - 2018-01-26
 
 - Worked through a merge conflict.

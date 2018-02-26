@@ -78,7 +78,9 @@ _vueLoginButtons = Vue.component('login-buttons',
         configurationLoaded: false,
         loggingInOrOut: false,
         dropdownStatus: false,
-        loginServices: 0
+        loginServices: 0,
+        errorMessage: null,
+        infoMessage: null
       };
     },
     // Let Vue see Meteor reactive data
@@ -104,6 +106,16 @@ _vueLoginButtons = Vue.component('login-buttons',
       loginServices: {
         update() {
           return getLoginServices().length;
+        }
+      },
+      errorMessage: {
+        update() {
+          return loginButtonsSession.get('errorMessage');
+        }
+      },
+      infoMessage: {
+        update() {
+          return loginButtonsSession.get('infoMessage');
         }
       }
     },
@@ -370,7 +382,25 @@ var _vueMessages = Vue.component('login-buttons-messages',
 {
   name: 'login-buttons-messages',
   template: '#login-buttons-messages-template',
-  props: ['errorMessage','infoMessage']
+  data: function() {
+    return {
+      errorMessage: null,
+      infoMessage: null
+    };
+  },
+  // Let Vue see Meteor reactive data
+  meteor: {
+    errorMessage: {
+      update() {
+        return loginButtonsSession.get('errorMessage');
+      }
+    },
+    infoMessage: {
+      update() {
+        return loginButtonsSession.get('infoMessage');
+      }
+    }
+  }
 }
 );
 

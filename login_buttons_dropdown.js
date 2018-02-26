@@ -695,10 +695,12 @@ var login = function () {
     else
       loginSelector = {username: username};
   } else if (email !== null) {
-    if (!validateEmail(email))
+    if (!validateEmail(email)) {
+      loginButtonsSession.errorMessage("Invalid email");
       throw new Error("Invalid email");
-    else
+    } else {
       loginSelector = {username: email};
+    }
   } else if (usernameOrEmail !== null) {
     // XXX not sure how we should validate this. but this seems good enough (for now),
     // since an email must have at least 3 characters anyways
@@ -713,7 +715,6 @@ var login = function () {
   console.log("Logging in username with password: ", loginSelector, password);
   Meteor.loginWithPassword(loginSelector, password, function (error, result) {
     if (error) {
-      throw new Error(error.reason || "Unknown error");
       loginButtonsSession.errorMessage(error.reason || "Unknown error");
     } else {
       loginButtonsSession.closeDropdown();
