@@ -1,5 +1,11 @@
 # Changelog for Meteor Mogul meteor-accounts-vue-unstyled
 
+## [0.0.17] - 2018-01-26
+
+- More forward progress!
+- displayName when logged in.
+- Got login and logout working.  Whew!
+
 ## [0.0.16] - 2018-01-18
 
 - Even more progress.

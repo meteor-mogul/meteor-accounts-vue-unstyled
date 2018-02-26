@@ -11,6 +11,8 @@ import { Vue } from 'meteor/meteormogul:vue-dist';
 import VueMeteorTracker from 'vue-meteor-tracker';
 Vue.use(VueMeteorTracker);
 
+import { Accounts } from 'meteor/accounts-base';
+
 // Use symbols from other files
 import { _vueLoggedOutDropdown } from './login_buttons_dropdown.js';
 import { _vueLoggedOutSingleLoginButton } from './login_buttons_single.js';
@@ -507,4 +509,4 @@ Template._loginButtonsLoggingInPadding.helpers({
 });
 */
 
-export { _vueLoginButtons };
+export { _vueLoginButtons, displayName };

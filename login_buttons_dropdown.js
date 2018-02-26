@@ -3,6 +3,7 @@ import VueMeteorTracker from 'vue-meteor-tracker';
 Vue.use(VueMeteorTracker);
 
 import { MMDEBUG } from './main.js';
+import { displayName } from './login_buttons.js';
 MMDEBUG && console.log("Running meteormogul:accounts-vue-unstyled/login_buttons_dropdown.js");
 
 // for convenience
@@ -23,7 +24,7 @@ var _vueLoggedInDropdown = Vue.component('login-buttons-logged-in-dropdown',
     meteor: {
         displayName: {
           update () {
-            return displayName;
+            return displayName();
           }
         },
         dropdownVisible: {
@@ -41,6 +42,16 @@ var _vueLoggedInDropdown = Vue.component('login-buttons-logged-in-dropdown',
             return loginButtonsSession.get('inChangePasswordFlow');
           }
         }
+    },
+    methods: {
+      showDropdown: function () {
+        MMDEBUG && console.log('showDropdown');
+        loginButtonsSession.set('dropdownVisible', true);
+      },
+      hideDropdown: function () {
+        MMDEBUG && console.log('closeDropdown');
+        loginButtonsSession.closeDropdown();
+      }
     }
 }
 );
@@ -266,6 +277,7 @@ var _vueLoggedOutPasswordService = Vue.component('login-buttons-logged-out-passw
       redraw.style.display = 'block';
     },
     login: function () {
+      MMDEBUG && console.log("logging in...");
       loginOrSignup();
     }
   }
@@ -285,6 +297,8 @@ var _vueBackToLoginLink = Vue.component('login-buttons-back-to-login-link',
   template: '#login-buttons-back-to-login-link-template',
   methods: {
     login: function () {
+      MMDEBUG && console.log("logging in...");
+      return;
       loginButtonsSession.resetMessages();
 
       var username = trimmedElementValueById('login-username');
@@ -679,22 +693,24 @@ var login = function () {
       loginSelector = {username: username};
   } else if (email !== null) {
     if (!validateEmail(email))
-      return;
+      throw new Error("Invalid email");
     else
-      loginSelector = {email: email};
+      loginSelector = {username: email};
   } else if (usernameOrEmail !== null) {
     // XXX not sure how we should validate this. but this seems good enough (for now),
     // since an email must have at least 3 characters anyways
     if (!validateUsername(usernameOrEmail))
       return;
     else
-      loginSelector = usernameOrEmail;
+      loginSelector = {username: usernameOrEmail};
   } else {
     throw new Error("Unexpected -- no element to use as a login user selector");
   }
 
+  console.log("Logging in username with password: ", loginSelector, password);
   Meteor.loginWithPassword(loginSelector, password, function (error, result) {
     if (error) {
+      throw new Error(error.reason || "Unknown error");
       loginButtonsSession.errorMessage(error.reason || "Unknown error");
     } else {
       loginButtonsSession.closeDropdown();

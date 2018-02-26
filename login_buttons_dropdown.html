@@ -4,13 +4,13 @@
 <!--           -->
   <script type="text/x-template" id="login-buttons-logged-in-dropdown-template">
     <div class="login-link-and-dropdown-list">
-      <a class="login-link-text" id="login-name-link">
+      <a class="login-link-text" id="login-name-link" v-on:click="showDropdown">
         {{displayName}} ▾
       </a>
 
       <div v-if="dropdownVisible">
         <div id="login-dropdown-list" class="accounts-dialog">
-          <a class="login-close-text">Close</a>
+          <a class="login-close-text" v-on:click="hideDropdown">Close</a>
           <div class="login-close-text-clear"></div>
           <div v-if="inMessageOnlyFlow">
             <login-buttons-messages></login-buttons-messages>
@@ -109,7 +109,7 @@
       <forgot-password-form></forgot-password-form>
     </div>
     <div v-else>
-      <form class="login-form login-password-form">
+      <form v-on:submit.prevent class="login-form login-password-form">
         <div v-for="field in fields">
           <login-buttons-form-field :field="field"></login-buttons-form-field>
         </div>
@@ -125,7 +125,7 @@
             Create account
           </div>
           <div v-else>
-            Sign in
+            Login
           </div>
         </button>
 
